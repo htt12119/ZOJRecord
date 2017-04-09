@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+int count = 0, n = 0;
+//判断该ch[x][y]是否可以放置
+bool isOk(char **ch, int x, int y){
+	int i;
+	//向上检索
+	for (i = x - 1; i >=0; --i){
+		if(ch[i][y]=='0'){
+			return false;
+		}
+		//碰到墙
+		if(ch[i][y] == 'X'){
+			break;
+		}
+	}
+	//向左检索
+	for (i = y - 1; i >=0; --i){
+		if(ch[x][i]=='0'){
+			return false;
+		}
+		//碰到墙
+		if(ch[x][i] == 'X'){
+			break;
+		}
+	}
+	return true;
+}
+void search(char **ch, int k, int step){
+	int x, y;
+	if(k == n * n){//到达最末
+		//是否大于之前的count
+		if(step > count){
+			count = step;
+			return;
+		}
+	}else {
+		x = k / n;//行数
+		y = k % n;//列数
+		if(ch[x][y] == '.' && isOk(ch, x, y)){
+			ch[x][y] = '0';
+			search(ch, k+1, step+1);//进入k+1步的搜索
+			//关键理解下面两句！回溯！
+			ch[x][y] = '.';//重新赋值为'.'，为了下一轮的搜索
+			search(ch, k+1, step);
+		}else {
+			//ch[x][y]不为'.'，进入k+1步
+			search(ch, k+1, step);
+		}
+	}
+	return;
+}
+int main(){
+	while(cin>>n && n){
+		count = 0;
+		char **ch = new char* [n];
+		for(int i = 0; i < n; ++i){
+			ch[i] = new char[n];
+		}
+		for(int j = 0; j < n; ++j){
+			for(int k = 0; k < n; ++k){
+				cin>>ch[j][k];
+			}
+		}
+		search(ch, 0, 0);
+		cout<<count<<endl;
+	}
+	return 0 ;
+}
+
+/*
+烦死了烦死了烦死了，一点思路都没有。这样的怎么办啊啊啊啊啊啊啊！思路懂了我也不会写啊？？？？？是copy的。
+http://blog.csdn.net/cannel_2020/article/details/7413770  这个啦
+*/
